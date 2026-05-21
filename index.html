@@ -757,7 +757,7 @@
         // --- SYSTEM CORE RENDERING MODULES ---
 
         function performSystemVersionCheck() {
-            const versionUrl = 'https://raw.githubusercontent.com/dummy-url-for-version/main.txt'; 
+            const versionUrl = 'https://raw.githubusercontent.com/pixelate-git/Fallout/refs/heads/main/version.txt'; 
             fetch(versionUrl)
                 .then(response => response.text())
                 .then(onlineVersion => {
