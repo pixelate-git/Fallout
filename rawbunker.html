@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUNKER NET - DEFCON ARCADE</title>
+    <style>
+        /* --- CORE SYSTEM & VARIABLES --- */
+        :root {
+            --alert-green: #00ff66;
+            --alert-yellow: #ffcc00;
+            --alert-red: #ff3333;
+            --alert-blue: #00d9ff;
+            --alert-purple: #bd00ff;
+            
+            /* Baseline Safe Configuration Parameters */
+            --primary: var(--alert-green);
+            --primary-glow: rgba(0, 255, 102, 0.3);
+            --bg-metal: #1a1d1a;
+            --panel-metal: #252a25;
+            --border-metal: #384238;
+
+            /* Dynamic Variables Managed via DOM Scripting Engines */
+            --shutter-text-color: var(--alert-green);
+            --tape-speed-top: 25s;
+            --tape-speed-bottom: 25s;
+        }
+
+        /* --- THEMATIC STATE OVERRIDES --- */
+        body.condition-yellow {
+            --primary: var(--alert-yellow);
+            --primary-glow: rgba(255, 204, 0, 0.3);
+            --bg-metal: #1e1d15;
+            --panel-metal: #2b2a1e;
+            --border-metal: #423f2d;
+            --tape-speed-top: 15s;
+            --tape-speed-bottom: 15s;
+        }
+
+        body.condition-red {
+            --primary: var(--alert-red);
+            --primary-glow: rgba(255, 51, 51, 0.3);
+            --bg-metal: #1f1414;
+            --panel-metal: #2e1d1d;
+            --border-metal: #472d2d;
+            --tape-speed-top: 5s;
+            --tape-speed-bottom: 5s;
+        }
+
+        body.condition-blue {
+            --primary: var(--alert-blue);
+            --primary-glow: rgba(0, 217, 255, 0.4);
+            --bg-metal: #111622;
+            --panel-metal: #182030;
+            --border-metal: #26354d;
+            --tape-speed-top: 8s;
+            --tape-speed-bottom: 8s;
+        }
+
+        body.condition-purple {
+            --primary: var(--alert-purple);
+            --primary-glow: rgba(189, 0, 255, 0.4);
+            --bg-metal: #161122;
+            --panel-metal: #201830;
+            --border-metal: #35264d;
+            --tape-speed-top: 3s;
+            --tape-speed-bottom: 3s;
+        }
+
+        /* --- STRUCTURE & DETAILED INDUSTRIAL TEXTURES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-metal);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.5) 50%),
+                linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 4px, 20px 20px, 20px 20px;
+            color: #d1d5db;
+            overflow-x: hidden;
+            padding-bottom: 90px;
+            border: 10px solid #111;
+            min-height: 100vh;
+            transition: background-color 0.4s ease;
+        }
+
+        /* CRT Filter Overlays */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+            z-index: 9999;
+            opacity: 0.6;
+            pointer-events: none;
+            background-size: 100% 3px, 3px 100%;
+        }
+
+        /* --- HARDWARE PURPLE SCREEN GLITCH & SHAKE MODULE --- */
+        .glitch-active {
+            animation: screenShake 0.1s infinite;
+            filter: hue-rotate(280deg) contrast(1.8) brightness(1.2);
+        }
+
+        @keyframes screenShake {
+            0% { transform: translate(4px, 2px) rotate(0deg); }
+            10% { transform: translate(-2px, -3px) rotate(-1deg); }
+            20% { transform: translate(-5px, 0px) rotate(1.5deg); }
+            30% { transform: translate(0px, 4px) rotate(0deg); }
+            40% { transform: translate(3px, -2px) rotate(1deg); }
+            50% { transform: translate(-2px, 3px) rotate(-1.5deg); }
+            60% { transform: translate(-4px, 2px) rotate(0deg); }
+            70% { transform: translate(3px, 2px) rotate(-1deg); }
+            80% { transform: translate(-2px, -2px) rotate(1.5deg); }
+            90% { transform: translate(4px, 3px) rotate(0deg); }
+            100% { transform: translate(2px, -3px) rotate(-1deg); }
+        }
+
+        /* --- INFINITE SCROLLING HAZARD TAPE --- */
+        .tape-wrapper {
+            overflow: hidden;
+            height: 24px;
+            width: 100%;
+            border-top: 3px solid #000;
+            border-bottom: 3px solid #000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+            position: relative;
+        }
+
+        .caution-tape {
+            height: 100%;
+            width: 200%;
+            position: absolute;
+            background: repeating-linear-gradient(
+                -45deg,
+                #111,
+                #111 15px,
+                var(--primary) 15px,
+                var(--primary) 30px
+            );
+            transition: background 0.4s ease;
+        }
+
+        .tape-top .caution-tape {
+            left: 0;
+            animation: scrollLeft var(--tape-speed-top) linear infinite;
+        }
+
+        .tape-bottom .caution-tape {
+            right: 0;
+            animation: scrollRight var(--tape-speed-bottom) linear infinite;
+        }
+
+        @keyframes scrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes scrollRight {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); }
+        }
+
+        /* --- CONTROL INFRASTRUCTURE CONTAINER --- */
+        header {
+            background: linear-gradient(180deg, #2e342e, #181b18);
+            border: 4px solid #444;
+            border-top: none;
+            margin: 0 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        body.condition-yellow header { background: linear-gradient(180deg, #363427, #1c1b14); }
+        body.condition-red header { background: linear-gradient(180deg, #3a2525, #1f1414); }
+        body.condition-blue header { background: linear-gradient(180deg, #1c2536, #0e131d); border-color: #2c3b54; }
+        body.condition-purple header { background: linear-gradient(180deg, #251c36, #130e1d); border-color: #3b2c54; }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-glow);
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+
+        /* --- RUGGED CONSOLE PANEL SWITCHBOARDS --- */
+        .console-system-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 320px;
+        }
+
+        .interface-control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #111;
+            padding: 8px;
+            border: 3px solid #444;
+            border-radius: 4px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,1);
+        }
+        body.condition-blue .interface-control-group { border-color: #2c3b54; }
+        body.condition-purple .interface-control-group { border-color: #3b2c54; }
+
+        .override-box {
+            border-color: #5d2586;
+            background: #09050f;
+        }
+
+        .alert-panel {
+            display: flex;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .alert-btn {
+            background: linear-gradient(180deg, #444, #222);
+            border: 2px solid #555;
+            color: #888;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.1s ease;
+            box-shadow: 0 3px 0 #111;
+            flex-grow: 1;
+        }
+
+        .alert-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 0px 0 #111;
+        }
+
+        .alert-btn.active[data-level="green"] { background: linear-gradient(180deg, #00aa44, #004411); color: #fff; border-color: var(--alert-green); box-shadow: 0 0 10px var(--alert-green); text-shadow: 0 0 5px #fff; }
+        .alert-btn.active[data-level="yellow"] { background: linear-gradient(180deg, #cc9900, #554400); color: #fff; border-color: var(--alert-yellow); box-shadow: 0 0 10px var(--alert-yellow); text-shadow: 0 0 5px #fff; }
+        .alert-btn.active[data-level="red"] { background: linear-gradient(180deg, #cc1111, #550000); color: #fff; border-color: var(--alert-red); box-shadow: 0 0 10px var(--alert-red); text-shadow: 0 0 5px #fff; }
+        .alert-btn.active[data-level="blue"] { background: linear-gradient(180deg, #0088cc, #003355); color: #fff; border-color: var(--alert-blue); box-shadow: 0 0 15px var(--alert-blue); text-shadow: 0 0 5px #fff; }
+        .alert-btn.active[data-level="purple"] { background: linear-gradient(180deg, #8800cc, #330055); color: #fff; border-color: var(--alert-purple); box-shadow: 0 0 15px var(--alert-purple); text-shadow: 0 0 5px #fff; }
+
+        /* --- HEAVY METAL BOLTS & SWITCH RIVETS --- */
+        .industrial-bolt {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #666, #333);
+            border: 2px solid #222;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3), 1px 2px 3px rgba(0,0,0,0.8);
+        }
+
+        .bolt-rotatable {
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bolt-rotatable::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background: #111;
+            top: 5px; left: 1px;
+        }
+
+        .bypass-rivet {
+            cursor: default;
+            transition: all 0.4s ease;
+        }
+        .bypass-rivet::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 2px;
+            background: #222;
+            top: 5px; left: 2px;
+            transform: rotate(35deg);
+        }
+        .bypass-rivet.unlocked {
+            cursor: pointer;
+            background: radial-gradient(circle, #fff 10%, var(--alert-blue) 60%);
+            border-color: #fff;
+            box-shadow: 0 0 12px var(--alert-blue);
+        }
+        .bypass-rivet.unlocked::after { background: #fff; }
+
+        /* --- SEARCH ARCHITECTURE --- */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-bar {
+            width: 100%;
+            background: #050505;
+            border: 3px solid var(--border-metal);
+            padding: 12px 15px;
+            color: var(--primary);
+            font-size: 1.1rem;
+            outline: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            transition: border-color 0.3s ease;
+        }
+        .search-bar:focus {
+            border-color: var(--primary);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 0 10px var(--primary-glow);
+        }
+
+        /* --- TERMINAL DISPLAY ARRAY GRID --- */
+        .main-container {
+            margin: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .bunker-panel {
+            background: var(--panel-metal);
+            border: 5px solid var(--border-metal);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+            padding: 25px;
+        }
+
+        .panel-title {
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed var(--border-metal);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- INDUSTRIAL GRID DATABASE ENTRIES --- */
+        .game-card {
+            background: #111;
+            border: 3px solid #333;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+        }
+        body.condition-blue .game-card { border-color: #1a2538; }
+        body.condition-purple .game-card { border-color: #251a38; }
+
+        .game-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9), 0 0 15px var(--primary-glow);
+        }
+
+        .game-thumb {
+            width: 100%;
+            height: 140px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #222;
+            color: #444;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        body.condition-blue .game-thumb { background: #0b0f16; border-color: #121924; }
+        body.condition-purple .game-thumb { background: #0f0b16; border-color: #191224; }
+        
+        .game-thumb::after {
+            content: "SECURE FILE";
+            font-size: 0.8rem;
+            color: var(--primary);
+            opacity: 0.3;
+            border: 1px solid var(--primary);
+            padding: 4px;
+            transform: rotate(-15deg);
+        }
+        body.condition-blue .game-thumb::after { content: "RESTRICTED ARCHON"; }
+        body.condition-purple .game-thumb::after { content: "QUARANTINE EXCLUSION"; }
+
+        .game-title { color: #fff; font-size: 1.1rem; text-transform: uppercase; }
+        .game-desc { font-size: 0.85rem; color: #9aa0a6; line-height: 1.3; flex-grow: 1; }
+
+        .launch-btn {
+            background: #1a1a1a;
+            border: 2px solid var(--border-metal);
+            color: var(--primary);
+            padding: 8px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .launch-btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* --- FUTURISTIC NEON SHUTTER OVERLAY ARCHITECTURE --- */
+        #blast-shutter {
+            position: fixed;
+            top: -100vh;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 50%, rgba(13, 8, 28, 0.95), rgba(3, 2, 8, 0.99));
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        }
+
+        #blast-shutter.shutter-visible {
+            opacity: 1;
+        }
+
+        /* Neon Relic Terminal Box Frame Layout Override */
+        #blast-shutter .terminal-box {
+            width: 85%;
+            max-width: 650px;
+            background: rgba(10, 6, 22, 0.75);
+            border: 2px solid var(--alert-purple);
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 0 25px rgba(189, 0, 255, 0.25), inset 0 0 20px rgba(0, 217, 255, 0.15);
+            font-family: 'Courier New', monospace;
+            color: var(--shutter-text-color);
+            text-shadow: 0 0 8px rgba(189, 0, 255, 0.4);
+            transition: color 0.4s ease, border-color 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+
+        #blast-shutter.shutter-worn .terminal-box {
+            border-color: var(--alert-purple);
+            box-shadow: 0 0 35px var(--alert-purple), inset 0 0 25px rgba(0, 217, 255, 0.3);
+        }
+
+        /* Futuristic Neon Scanline Overlay Matrix Grid */
+        #blast-shutter .terminal-box::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(189, 0, 255, 0.05) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                        linear-gradient(90deg, rgba(0, 217, 255, 0.03), transparent, rgba(189, 0, 255, 0.03));
+            z-index: 4;
+            background-size: 100% 6px, 12px 100%;
+            pointer-events: none;
+        }
+
+        #blast-shutter .terminal-box::after {
+            content: "";
+            position: absolute;
+            top: -50%; left: -50%; right: -50%; bottom: -50%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 2px,
+                rgba(0, 217, 255, 0.04) 2px,
+                rgba(0, 217, 255, 0.04) 4px
+            );
+            opacity: 0.9;
+            animation: crt-flicker 0.15s infinite;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Holographic Dynamic Sweep Lines Layer */
+        .terminal-damaged-fx {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+        .terminal-damaged-fx::before {
+            content: ""; 
+            position: absolute; 
+            width: 100%; 
+            height: 100%;
+            background: linear-gradient(transparent, rgba(0, 217, 255, 0.05), transparent);
+            top: -100%;
+            animation: holoSweep 4s linear infinite;
+        }
+        .terminal-damaged-fx::after {
+            content: "[MATRIX CORRELATION MODULE // ONLINE]"; 
+            position: absolute; 
+            font-size: 0.65rem; 
+            color: rgba(0, 217, 255, 0.4); 
+            top: 12px; 
+            right: 15px;
+            letter-spacing: 1px;
+        }
+
+        @keyframes holoSweep {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        /* Holographic Glow Input Prompt Box Frame */
+        .crypto-prompt-container {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid rgba(189, 0, 255, 0.3);
+            padding-top: 20px;
+            position: relative;
+            z-index: 6;
+        }
+
+        .crypto-input {
+            background: rgba(5, 2, 12, 0.8);
+            border: 1px solid var(--alert-purple);
+            color: #fff;
+            padding: 12px;
+            width: 100%;
+            font-family: monospace;
+            outline: none;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.2), inset 0 0 8px rgba(0,0,0,1);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .crypto-input:focus {
+            border-color: var(--alert-blue);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.4), inset 0 0 8px rgba(0,0,0,1);
+        }
+
+        /* --- HARDWARE UTILITY PANEL (FOOTER REMOVAL OPTIONS) --- */
+        footer {
+            margin: 0 20px 40px 20px;
+            padding: 15px;
+            background: #111;
+            border: 3px solid var(--border-metal);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,1);
+        }
+
+        .system-wipe-btn {
+            background: linear-gradient(180deg, #331111, #1a0505);
+            border: 2px solid #552222;
+            color: #b37373;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.1s ease;
+        }
+
+        .system-wipe-btn:hover {
+            background: #551111;
+            color: #fff;
+            border-color: var(--alert-red);
+            box-shadow: 0 0 10px rgba(255,51,51,0.4);
+        }
+
+        /* --- UTILITY SYSTEM OBJECT FRAMES --- */
+        #version-tag { position: fixed; bottom: 10px; right: 10px; background: #000; padding: 4px 8px; border: 1px solid #333; font-size: 0.75rem; color: #666; z-index: 999; }
+        #system-alert-banner { display: none; background: #ff3333; color: #fff; font-weight: bold; text-align: center; padding: 10px; border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 1001; text-transform: uppercase; letter-spacing: 1px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    </style>
+</head>
+<body class="condition-green">
+
+    <!-- Out of Date System Alert Frame -->
+    <div id="system-alert-banner">
+        ⚠️ CRITICAL OVERRIDE: CLIENT VERSION OUTDATED. LOCAL: v1.0.0 // REQUIRED: <span id="required-version">X.X.X</span>. SYSTEM CORRUPTION RISK.
+    </div>
+
+    <!-- Top Left-Scrolling Infrastructure Tape -->
+    <div class="tape-wrapper tape-top">
+        <div class="caution-tape"></div>
+    </div>
+
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>BUNKER-NET://CORE_ARCADE</h1>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 4px;">SECURE TERMINAL ACCESS SYSTEM</p>
+            </div>
+            
+            <!-- Dual Console Panel Layout Selection Interface -->
+            <div class="console-system-group">
+                <!-- Standard Safety Parameters Box -->
+                <div class="interface-control-group">
+                    <div class="industrial-bolt bolt-rotatable" id="glitch-bolt-trigger"></div>
+                    <div class="alert-panel">
+                        <button class="alert-btn active" data-level="green">LVL 1: SAFE</button>
+                        <button class="alert-btn" data-level="yellow">LVL 2: CAUTION</button>
+                        <button class="alert-btn" data-level="red">LVL 3: CRISIS</button>
+                    </div>
+                    <div class="industrial-bolt bypass-rivet" id="secret-trigger"></div>
+                </div>
+
+                <!-- Classified Standalone Override Panel -->
+                <div class="interface-control-group override-box" id="override-subpanel" style="display: none;">
+                    <div class="industrial-bolt"></div>
+                    <div class="alert-panel" id="override-buttons-target">
+                        <button class="alert-btn" data-level="blue" id="archon-btn" style="display: none;">OVERRIDE: ARCHON</button>
+                        <button class="alert-btn" data-level="purple" id="quarantine-btn" style="display: none;">OVERRIDE: QUARANTINE</button>
+                    </div>
+                    <div class="industrial-bolt"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="bunker-search" class="search-bar" placeholder="SEARCH FOR ACCESSIBLE ARCHIVES...">
+        </div>
+    </header>
+
+    <!-- Main Databank Frame -->
+    <main class="main-container">
+        <section class="bunker-panel">
+            <div class="panel-title">
+                <span id="category-heading">AVAILABLE APPLICATIONS</span>
+                <span id="system-counter" style="font-size: 0.9rem;">RECORDS DISPLAYED: 0</span>
+            </div>
+            
+            <div class="game-grid" id="games-container">
+                <!-- Injected via Script Core Configurations -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Hard Asset Maintenance Infrastructure Footer -->
+    <footer>
+        <div style="font-size: 0.8rem; color: #555;">SECURITY REGISTRY ENGINE INTERFACE // LOC_0x9F</div>
+        <button class="system-wipe-btn" id="wipe-system-data">WIPE HARD SYSTEM DATA</button>
+    </footer>
+
+    <!-- Bottom Right-Scrolling Infrastructure Tape -->
+    <div class="tape-wrapper tape-bottom" style="position: fixed; bottom: 0; left: 0; z-index: 998;">
+        <div class="caution-tape"></div>
+    </div>
+
+    <!-- Hard Asset Versioning Identifier -->
+    <div id="version-tag">SYS_VER: v1.0.0</div>
+
+    <!-- Blast Shutter Matrix Transition Screen -->
+    <div id="blast-shutter">
+        <div class="tape-wrapper tape-top" style="position: absolute; top:0;"><div class="caution-tape"></div></div>
+        <div class="terminal-box">
+            <div class="terminal-damaged-fx" id="shutter-damage-layer"></div>
+            <h3 style="margin-bottom: 15px; border-bottom: 1px solid; position: relative; z-index: 6; text-transform: uppercase; letter-spacing: 2px;" id="shutter-title">INITIALIZING PROTOCOL...</h3>
+            <p id="shutter-text" style="position: relative; z-index: 6; font-size: 0.95rem; line-height: 1.4;">RE-ROUTING POWER CHANNELS AND SECURING VAULT MODULES...</p>
+            
+            <!-- Terminal Encrypted Input Prompt Layer -->
+            <div class="crypto-prompt-container" id="terminal-prompt-frame">
+                <label for="terminal-pass-field" style="display: block; margin-bottom: 12px; font-size: 0.85rem; letter-spacing: 2px; color: var(--alert-blue);">CRITICAL QUANTUM DECRYPTION KEY REQUIRED:</label>
+                <input type="password" id="terminal-pass-field" class="crypto-input" autocomplete="off" placeholder="••••••••">
+                <p style="color:#5d527a; font-size:0.75rem; margin-top:12px; text-transform: uppercase; letter-spacing: 1px;">Input matrix validation node string and press [ENTER].</p>
+            </div>
+
+            <p id="shutter-footer" style="margin-top: 15px; font-size: 0.8rem; opacity: 0.5; position: relative; z-index: 6;">PLEASE HOLD STEADY DURING VENTILATION CYCLE.</p>
+        </div>
+        <div class="tape-wrapper tape-bottom" style="position: absolute; bottom:0;"><div class="caution-tape"></div></div>
+    </div>
+
+    <!-- --- JAVASCRIPT SYSTEM ENGINE LOGIC --- -->
+    <script>
+        // --- MASTER LOGICAL DATA MANAGEMENT ---
+        const CURRENT_VERSION = "v1.0.0";
+        const SECRET_SEQUENCE = ['green', 'red', 'yellow', 'green', 'red', 'green'];
+        
+        const DATABASE_GAMES = [
+            { id: 1, title: "Mine Defuser v1", desc: "A logical grid clearing procedure designed to isolate atomic cluster charges.", level: "green" },
+            { id: 2, title: "Terminal Snake", desc: "Re-route standard data packets back into memory matrix grids.", level: "green" },
+            { id: 3, title: "Sub-Level Tetris", desc: "Stack isotope shielding tiles seamlessly to avert radiation leaks.", level: "green" },
+            { id: 4, title: "Breakout Override", desc: "Bypass firewall modules with high-velocity kinetic data nodes.", level: "yellow" },
+            { id: 5, title: "Reactor Invaders", desc: "Destroy unauthorized anomalies descending onto the cooling array.", level: "yellow" },
+            { id: 6, title: "DEFCON Command", desc: "High intensity thermonuclear trajectories calculus interface simulator.", level: "red" },
+            { id: 7, title: "Core Melt-Down Evac", desc: "Procedural escape execution program. Hardcore response timing mandatory.", level: "red" },
+            { id: 8, title: "ARCHON: Mainframe Breach", desc: "Direct injection kernel level simulator. Total infrastructure mastery control.", level: "blue" },
+            { id: 9, title: "Orbital Laser Strike", desc: "De-orbit structural defense satellites. Command network authorization confirmed.", level: "blue" },
+            { id: 10, title: "BLACKOUT: Null Router", desc: "Wipe secondary tracing nodes outside localized physical arrays.", level: "purple" },
+            { id: 11, title: "Isotope Processor 9", desc: "Manually align unstable quantum cores inside synthetic vacuum chambers.", level: "purple" }
+        ];
+
+        // --- STATE FLOW PARAMS ---
+        let inputTrackingSequence = [];
+        let blueModeUnlocked = false;
+        let purpleModeUnlocked = false;
+        let currentActiveLevel = "green";
+        let trackingBoltRotation = 0;
+        let isPromptTransitionActive = false;
+
+        // --- DOM MANIPULATION POINTER MANAGEMENT ---
+        const bodyElement = document.body;
+        const alertButtons = document.querySelectorAll('.alert-btn');
+        const overrideSubpanel = document.getElementById('override-subpanel');
+        const archonButton = document.getElementById('archon-btn');
+        const quarantineButton = document.getElementById('quarantine-btn');
+        const secretRivet = document.getElementById('secret-trigger');
+        const glitchBolt = document.getElementById('glitch-bolt-trigger');
+        const wipeDataButton = document.getElementById('wipe-system-data');
+        
+        const gamesContainer = document.getElementById('games-container');
+        const searchInput = document.getElementById('bunker-search');
+        const categoryHeading = document.getElementById('category-heading');
+        const systemCounter = document.getElementById('system-counter');
+        
+        const blastShutter = document.getElementById('blast-shutter');
+        const shutterTitle = document.getElementById('shutter-title');
+        const shutterText = document.getElementById('shutter-text');
+        const shutterFooter = document.getElementById('shutter-footer');
+        const shutterDamageLayer = document.getElementById('shutter-damage-layer');
+        const terminalPromptFrame = document.getElementById('terminal-prompt-frame');
+        const terminalPassField = document.getElementById('terminal-pass-field');
+
+        // --- SYSTEM CORE RENDERING MODULES ---
+
+        function performSystemVersionCheck() {
+            const versionUrl = 'https://raw.githubusercontent.com/dummy-url-for-version/main.txt'; 
+            fetch(versionUrl)
+                .then(response => response.text())
+                .then(onlineVersion => {
+                    const cleaned = onlineVersion.trim();
+                    if(cleaned !== CURRENT_VERSION) triggerVersionAlertBanner(cleaned);
+                })
+                .catch(() => console.warn("Version tracking verification bypassed. Offline routing default configuration active."));
+        }
+
+        function triggerVersionAlertBanner(requiredVer) {
+            const banner = document.getElementById('system-alert-banner');
+            document.getElementById('required-version').textContent = requiredVer;
+            banner.style.display = 'block';
+        }
+
+        function buildSystemInterfaceMatrix() {
+            const searchQuery = searchInput.value.toLowerCase();
+            gamesContainer.innerHTML = '';
+
+            const filteredRegistry = DATABASE_GAMES.filter(game => {
+                return game.level === currentActiveLevel && 
+                       (game.title.toLowerCase().includes(searchQuery) || game.desc.toLowerCase().includes(searchQuery));
+            });
+
+            systemCounter.textContent = `RECORDS DISPLAYED: ${filteredRegistry.length}`;
+
+            if(filteredRegistry.length === 0) {
+                gamesContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--primary); padding: 40px; border: 2px dashed var(--border-metal);">NO FILE RECORD ALIGNS WITH CURRENT MATRIX QUERY.</div>`;
+                return;
+            }
+
+            filteredRegistry.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div class="game-thumb"></div>
+                    <div class="game-title">${game.title}</div>
+                    <div class="game-desc">${game.desc}</div>
+                    <button class="launch-btn" onclick="alert('BOOTING PROTOCOL SUB-ARRAY: ${game.title}...')">EXECUTE APPLICATION</button>
+                `;
+                gamesContainer.appendChild(card);
+            });
+        }
+
+        function checkControlSubpanelVisibility() {
+            if(blueModeUnlocked || purpleModeUnlocked) {
+                overrideSubpanel.style.display = 'flex';
+            } else {
+                overrideSubpanel.style.display = 'none';
+            }
+        }
+
+        function trackSequenceInput(level) {
+            if(blueModeUnlocked) return;
+            inputTrackingSequence.push(level);
+            if(inputTrackingSequence.length > SECRET_SEQUENCE.length) inputTrackingSequence.shift();
+
+            if(inputTrackingSequence.length === SECRET_SEQUENCE.length && 
+               inputTrackingSequence.every((val, i) => val === SECRET_SEQUENCE[i])) {
+                blueModeUnlocked = true;
+                secretRivet.classList.add('unlocked');
+            }
+        }
+
+        // --- TRANSITION CONTROLLER INTERFACE MECHANICS ---
+
+        function transitionAlertLevel(targetLevel) {
+            if(isPromptTransitionActive) return; // Halt standard loops during terminal decryption states
+            
+            document.documentElement.style.setProperty('--shutter-text-color', `var(--alert-${currentActiveLevel})`);
+            blastShutter.classList.remove('shutter-worn');
+            shutterDamageLayer.style.display = 'none';
+            terminalPromptFrame.style.display = 'none';
+            shutterFooter.style.display = 'block';
+
+            if(targetLevel === 'green') {
+                shutterTitle.textContent = "DE-ESCALATING THREAT MATRIX...";
+                shutterText.textContent = "Establishing safe parameters. Restoring auxiliary recreational databanks.";
+            } else if(targetLevel === 'yellow') {
+                shutterTitle.textContent = "WARNING: LEVEL 2 AMBIENT CONDITIONS...";
+                shutterText.textContent = "Securing core containment fields. Isolating hazard class computations.";
+            } else if(targetLevel === 'red') {
+                shutterTitle.textContent = "CRITICAL DEFCON OVERRIDE ENGINE ONLINE...";
+                shutterText.textContent = "Ventilation pathways locked. Purging basic databases. Accessing military level operations.";
+            } else if(targetLevel === 'blue') {
+                shutterTitle.textContent = "BOOTING ARCHON CLASSIFIED KERNEL...";
+                shutterText.textContent = "Bypassing external vault nodes... Reading classified dark-web sandbox allocations.";
+            } else if(targetLevel === 'purple') {
+                shutterTitle.textContent = "RE-ENGAGING QUARANTINE PROTOCOLS...";
+                shutterText.textContent = "Restricted sector grid configuration active. Critical memory allocation isolation.";
+            }
+
+            // Slide in and simultaneously fade in the screen shutter overlay
+            blastShutter.classList.add('shutter-visible');
+            blastShutter.style.top = "0";
+
+            setTimeout(() => {
+                document.documentElement.style.setProperty('--shutter-text-color', `var(--alert-${targetLevel})`);
+                bodyElement.className = '';
+                bodyElement.classList.add(`condition-${targetLevel}`);
+                
+                alertButtons.forEach(btn => btn.classList.remove('active'));
+                const targetBtn = document.querySelector(`[data-level="${targetLevel}"]`);
+                if(targetBtn) targetBtn.classList.add('active');
+
+                currentActiveLevel = targetLevel;
+                categoryHeading.textContent = `SECURITY CLEARANCE: SECURE_${targetLevel.toUpperCase()}_FILES`;
+                localStorage.setItem('bunker_security_clearance', targetLevel);
+                buildSystemInterfaceMatrix();
+            }, 400);
+
+            setTimeout(() => {
+                blastShutter.classList.remove('shutter-visible');
+                blastShutter.style.top = "-100vh";
+            }, 1800);
+        }
+
+        // --- GLITCH OVERLOAD TERMINAL OVERRIDE CRACKING ENGINE ---
+
+        function triggerGlitchBypassSequence() {
+            if(isPromptTransitionActive) return;
+            isPromptTransitionActive = true;
+
+            // Step 1: Hardware simulation rotation and explicit heavy purple flashing filters
+            trackingBoltRotation += 180;
+            glitchBolt.style.transform = `rotate(${trackingBoltRotation}deg)`;
+            bodyElement.classList.add('glitch-active');
+
+            // Step 2: Drop down damaged terminal interface mid-flicker loop
+            setTimeout(() => {
+                bodyElement.classList.remove('glitch-active');
+                document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-purple)');
+                
+                blastShutter.classList.add('shutter-worn');
+                shutterDamageLayer.style.display = 'block';
+                shutterFooter.style.display = 'none';
+                
+                shutterTitle.textContent = "FUTURE RELIC OVERRIDE ENGAGED // LINK_0x7A";
+                shutterText.textContent = "Quantum decryption array baseline active. Access terminal node data structures by transmitting the security unlock verification hash.";
+                
+                terminalPassField.value = "";
+                terminalPromptFrame.style.display = 'block';
+
+                blastShutter.classList.add('shutter-visible');
+                blastShutter.style.top = "0";
+
+                setTimeout(() => { terminalPassField.focus(); }, 300);
+            }, 600);
+        }
+
+        function verifyTerminalPassword() {
+            const injectedKey = terminalPassField.value;
+            terminalPromptFrame.style.display = 'none';
+
+            if(injectedKey === "password") {
+                // Success: Routing user into Purple Quarantine Zone
+                shutterTitle.textContent = "TRANSMISSION RECOGNIZED.";
+                shutterText.textContent = "Synchronizing chronal vectors... Activating high-tier quarantine node sub-systems. Welcome back, Operator.";
+                document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-purple)');
+                
+                purpleModeUnlocked = true;
+                quarantineButton.style.display = 'inline-block';
+                checkControlSubpanelVisibility();
+
+                setTimeout(() => {
+                    bodyElement.className = '';
+                    bodyElement.classList.add('condition-purple');
+                    
+                    alertButtons.forEach(btn => btn.classList.remove('active'));
+                    quarantineButton.classList.add('active');
+                    
+                    currentActiveLevel = "purple";
+                    categoryHeading.textContent = "SECURITY CLEARANCE: SECURE_PURPLE_FILES";
+                    localStorage.setItem('bunker_security_clearance', 'purple');
+                    localStorage.setItem('bunker_purple_unlocked', 'true');
+                    
+                    buildSystemInterfaceMatrix();
+                    exitShutterState();
+                }, 1200);
+            } else {
+                // Failure: Revert back to the safety zone previously stored
+                shutterTitle.textContent = "DECRYPTION INTEGRITY FAILURE. REJECTED.";
+                shutterText.textContent = "Re-establishing normal communication pathways with baseline servers... Stand by.";
+                document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-red)');
+
+                setTimeout(() => {
+                    document.documentElement.style.setProperty('--shutter-text-color', `var(--alert-${currentActiveLevel})`);
+                    exitShutterState();
+                }, 1500);
+            }
+        }
+
+        function exitShutterState() {
+            blastShutter.classList.remove('shutter-visible');
+            blastShutter.style.top = "-100vh";
+            setTimeout(() => {
+                blastShutter.classList.remove('shutter-worn');
+                shutterDamageLayer.style.display = 'none';
+                isPromptTransitionActive = false;
+            }, 500);
+        }
+
+        // --- HARD DATA SAVE RESET PROCEDURE ---
+        function executeHardSystemWipe() {
+            if(isPromptTransitionActive) return;
+            if(!confirm("⚠️ WARNING: CLEARING APPLICATION MEMORY REGISTRY.\nThis action locks all custom overrides and clears terminal parameters. Continue?")) return;
+
+            isPromptTransitionActive = true;
+            
+            // Revert all structural storage flags
+            localStorage.clear();
+            blueModeUnlocked = false;
+            purpleModeUnlocked = false;
+            inputTrackingSequence = [];
+            
+            // Visual hard restoration parameters
+            secretRivet.classList.remove('unlocked');
+            archonButton.style.display = 'none';
+            quarantineButton.style.display = 'none';
+            checkControlSubpanelVisibility();
+
+            // Run system purge sequence shutter animation
+            document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-red)');
+            shutterTitle.textContent = "PURGING MEMORY STRUCTURAL BANKS...";
+            shutterText.textContent = "Wiping cached authorization keys. Relocking hardware subpanels. Returning to base infrastructure state...";
+            shutterFooter.style.display = 'block';
+            
+            blastShutter.classList.add('shutter-visible');
+            blastShutter.style.top = "0";
+
+            setTimeout(() => {
+                bodyElement.className = '';
+                bodyElement.classList.add('condition-green');
+                
+                alertButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-level="green"]').classList.add('active');
+
+                currentActiveLevel = "green";
+                categoryHeading.textContent = "SECURITY CLEARANCE: SECURE_GREEN_FILES";
+                buildSystemInterfaceMatrix();
+            }, 600);
+
+            setTimeout(() => {
+                exitShutterState();
+            }, 2200);
+        }
+
+        // --- SYSTEM CONTROL EVENT LISTENERS ---
+
+        alertButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const targetLvl = e.target.getAttribute('data-level');
+                if(targetLvl !== 'blue' && targetLvl !== 'purple') trackSequenceInput(targetLvl);
+                if(targetLvl === currentActiveLevel) return; 
+                transitionAlertLevel(targetLvl);
+            });
+        });
+
+        secretRivet.addEventListener('click', () => {
+            if(!blueModeUnlocked) return;
+            archonButton.style.display = 'inline-block';
+            checkControlSubpanelVisibility();
+            localStorage.setItem('bunker_blue_unlocked', 'true');
+            transitionAlertLevel('blue');
+        });
+
+        glitchBolt.addEventListener('click', triggerGlitchBypassSequence);
+        wipeDataButton.addEventListener('click', executeHardSystemWipe);
+
+        terminalPassField.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') verifyTerminalPassword();
+        });
+
+        searchInput.addEventListener('input', buildSystemInterfaceMatrix);
+
+        // --- INITIALIZATION PROTOCOL PIPELINE ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLevel = localStorage.getItem('bunker_security_clearance');
+            const savedBlue = localStorage.getItem('bunker_blue_unlocked');
+            const savedPurple = localStorage.getItem('bunker_purple_unlocked');
+
+            if(savedBlue === 'true') {
+                blueModeUnlocked = true;
+                secretRivet.classList.add('unlocked');
+                archonButton.style.display = 'inline-block';
+            }
+            if(savedPurple === 'true') {
+                purpleModeUnlocked = true;
+                quarantineButton.style.display = 'inline-block';
+            }
+            checkControlSubpanelVisibility();
+
+            if (savedLevel && ['green', 'yellow', 'red', 'blue', 'purple'].includes(savedLevel)) {
+                currentActiveLevel = savedLevel;
+                bodyElement.className = '';
+                bodyElement.classList.add(`condition-${savedLevel}`);
+                
+                alertButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`[data-level="${savedLevel}"]`);
+                if(activeBtn) activeBtn.classList.add('active');
+                
+                categoryHeading.textContent = `SECURITY CLEARANCE: SECURE_${savedLevel.toUpperCase()}_FILES`;
+            }
+
+            document.documentElement.style.setProperty('--shutter-text-color', `var(--alert-${currentActiveLevel})`);
+
+            buildSystemInterfaceMatrix();
+            performSystemVersionCheck();
+        });
+    </script>
+</body>
+</html>
