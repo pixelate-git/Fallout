@@ -458,23 +458,18 @@
         #blast-shutter .terminal-box {
             width: 85%;
             max-width: 650px;
-            background: rgba(10, 6, 22, 0.75);
-            border: 2px solid var(--alert-purple);
+            background: rgba(10, 6, 22, 0.85);
+            border: 2px solid var(--shutter-text-color);
             border-radius: 12px;
             padding: 35px;
-            box-shadow: 0 0 25px rgba(189, 0, 255, 0.25), inset 0 0 20px rgba(0, 217, 255, 0.15);
+            box-shadow: 0 0 25px var(--shutter-text-color), inset 0 0 20px rgba(0, 0, 0, 0.6);
             font-family: 'Courier New', monospace;
             color: var(--shutter-text-color);
-            text-shadow: 0 0 8px rgba(189, 0, 255, 0.4);
-            transition: color 0.4s ease, border-color 0.4s ease;
+            text-shadow: 0 0 8px var(--shutter-text-color);
+            transition: color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(12px);
-        }
-
-        #blast-shutter.shutter-worn .terminal-box {
-            border-color: var(--alert-purple);
-            box-shadow: 0 0 35px var(--alert-purple), inset 0 0 25px rgba(0, 217, 255, 0.3);
         }
 
         /* Futuristic Neon Scanline Overlay Matrix Grid */
@@ -483,28 +478,41 @@
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(189, 0, 255, 0.05) 50%, rgba(0, 0, 0, 0.4) 50%), 
-                        linear-gradient(90deg, rgba(0, 217, 255, 0.03), transparent, rgba(189, 0, 255, 0.03));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02), transparent, rgba(255, 255, 255, 0.02));
             z-index: 4;
-            background-size: 100% 6px, 12px 100%;
+            background-size: 100% 4px, 6px 100%;
             pointer-events: none;
         }
 
+        /* Dynamic Scanline & CRT Jitter Noise Core Layer */
         #blast-shutter .terminal-box::after {
             content: "";
             position: absolute;
-            top: -50%; left: -50%; right: -50%; bottom: -50%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 2px,
-                rgba(0, 217, 255, 0.04) 2px,
-                rgba(0, 217, 255, 0.04) 4px
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.04) 10%,
+                rgba(255, 255, 255, 0) 11%
             );
+            background-size: 100% 500px;
             opacity: 0.9;
-            animation: crt-flicker 0.15s infinite;
+            animation: crt-scan-roll 6s linear infinite, crt-flicker 0.15s infinite;
             z-index: 5;
             pointer-events: none;
+        }
+
+        /* Hardware Rolling Scan Defect Animation */
+        @keyframes crt-scan-roll {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 500px; }
+        }
+
+        /* Simulated CRT Voltage Signal Fluctuations */
+        @keyframes crt-flicker {
+            0% { opacity: 0.98; }
+            50% { opacity: 0.95; }
+            100% { opacity: 0.99; }
         }
 
         /* Holographic Dynamic Sweep Lines Layer */
@@ -521,7 +529,7 @@
             position: absolute; 
             width: 100%; 
             height: 100%;
-            background: linear-gradient(transparent, rgba(0, 217, 255, 0.05), transparent);
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.05), transparent);
             top: -100%;
             animation: holoSweep 4s linear infinite;
         }
@@ -529,10 +537,11 @@
             content: "[MATRIX CORRELATION MODULE // ONLINE]"; 
             position: absolute; 
             font-size: 0.65rem; 
-            color: rgba(0, 217, 255, 0.4); 
+            color: var(--shutter-text-color); 
             top: 12px; 
             right: 15px;
             letter-spacing: 1px;
+            opacity: 0.6;
         }
 
         @keyframes holoSweep {
@@ -544,15 +553,16 @@
         .crypto-prompt-container {
             display: none;
             margin-top: 20px;
-            border-top: 1px solid rgba(189, 0, 255, 0.3);
+            border-top: 1px solid var(--shutter-text-color);
             padding-top: 20px;
             position: relative;
             z-index: 6;
+            transition: border-color 0.4s ease;
         }
 
         .crypto-input {
             background: rgba(5, 2, 12, 0.8);
-            border: 1px solid var(--alert-purple);
+            border: 1px solid var(--shutter-text-color);
             color: #fff;
             padding: 12px;
             width: 100%;
@@ -561,14 +571,14 @@
             font-size: 1.1rem;
             letter-spacing: 3px;
             text-align: center;
-            box-shadow: 0 0 15px rgba(189, 0, 255, 0.2), inset 0 0 8px rgba(0,0,0,1);
+            box-shadow: 0 0 15px var(--shutter-text-color), inset 0 0 8px rgba(0,0,0,1);
             border-radius: 6px;
             transition: all 0.3s ease;
         }
 
         .crypto-input:focus {
-            border-color: var(--alert-blue);
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.4), inset 0 0 8px rgba(0,0,0,1);
+            border-color: #fff;
+            box-shadow: 0 0 20px var(--shutter-text-color), inset 0 0 8px rgba(0,0,0,1);
         }
 
         /* --- HARDWARE UTILITY PANEL (FOOTER REMOVAL OPTIONS) --- */
@@ -611,12 +621,10 @@
 </head>
 <body class="condition-green">
 
-    <!-- Out of Date System Alert Frame -->
     <div id="system-alert-banner">
         ⚠️ CRITICAL OVERRIDE: CLIENT VERSION OUTDATED. LOCAL: v1.0.0 // REQUIRED: <span id="required-version">X.X.X</span>. SYSTEM CORRUPTION RISK.
     </div>
 
-    <!-- Top Left-Scrolling Infrastructure Tape -->
     <div class="tape-wrapper tape-top">
         <div class="caution-tape"></div>
     </div>
@@ -628,9 +636,7 @@
                 <p style="font-size: 0.8rem; color: #666; margin-top: 4px;">SECURE TERMINAL ACCESS SYSTEM</p>
             </div>
             
-            <!-- Dual Console Panel Layout Selection Interface -->
             <div class="console-system-group">
-                <!-- Standard Safety Parameters Box -->
                 <div class="interface-control-group">
                     <div class="industrial-bolt bolt-rotatable" id="glitch-bolt-trigger"></div>
                     <div class="alert-panel">
@@ -641,7 +647,6 @@
                     <div class="industrial-bolt bypass-rivet" id="secret-trigger"></div>
                 </div>
 
-                <!-- Classified Standalone Override Panel -->
                 <div class="interface-control-group override-box" id="override-subpanel" style="display: none;">
                     <div class="industrial-bolt"></div>
                     <div class="alert-panel" id="override-buttons-target">
@@ -658,7 +663,6 @@
         </div>
     </header>
 
-    <!-- Main Databank Frame -->
     <main class="main-container">
         <section class="bunker-panel">
             <div class="panel-title">
@@ -667,26 +671,21 @@
             </div>
             
             <div class="game-grid" id="games-container">
-                <!-- Injected via Script Core Configurations -->
-            </div>
+                </div>
         </section>
     </main>
 
-    <!-- Hard Asset Maintenance Infrastructure Footer -->
     <footer>
         <div style="font-size: 0.8rem; color: #555;">SECURITY REGISTRY ENGINE INTERFACE // LOC_0x9F</div>
         <button class="system-wipe-btn" id="wipe-system-data">WIPE HARD SYSTEM DATA</button>
     </footer>
 
-    <!-- Bottom Right-Scrolling Infrastructure Tape -->
     <div class="tape-wrapper tape-bottom" style="position: fixed; bottom: 0; left: 0; z-index: 998;">
         <div class="caution-tape"></div>
     </div>
 
-    <!-- Hard Asset Versioning Identifier -->
     <div id="version-tag">SYS_VER: v1.0.0</div>
 
-    <!-- Blast Shutter Matrix Transition Screen -->
     <div id="blast-shutter">
         <div class="tape-wrapper tape-top" style="position: absolute; top:0;"><div class="caution-tape"></div></div>
         <div class="terminal-box">
@@ -694,11 +693,10 @@
             <h3 style="margin-bottom: 15px; border-bottom: 1px solid; position: relative; z-index: 6; text-transform: uppercase; letter-spacing: 2px;" id="shutter-title">INITIALIZING PROTOCOL...</h3>
             <p id="shutter-text" style="position: relative; z-index: 6; font-size: 0.95rem; line-height: 1.4;">RE-ROUTING POWER CHANNELS AND SECURING VAULT MODULES...</p>
             
-            <!-- Terminal Encrypted Input Prompt Layer -->
             <div class="crypto-prompt-container" id="terminal-prompt-frame">
-                <label for="terminal-pass-field" style="display: block; margin-bottom: 12px; font-size: 0.85rem; letter-spacing: 2px; color: var(--alert-blue);">CRITICAL QUANTUM DECRYPTION KEY REQUIRED:</label>
+                <label for="terminal-pass-field" style="display: block; margin-bottom: 12px; font-size: 0.85rem; letter-spacing: 2px; color: inherit;">CRITICAL QUANTUM DECRYPTION KEY REQUIRED:</label>
                 <input type="password" id="terminal-pass-field" class="crypto-input" autocomplete="off" placeholder="••••••••">
-                <p style="color:#5d527a; font-size:0.75rem; margin-top:12px; text-transform: uppercase; letter-spacing: 1px;">Input matrix validation node string and press [ENTER].</p>
+                <p style="opacity:0.5; font-size:0.75rem; margin-top:12px; text-transform: uppercase; letter-spacing: 1px;">Input matrix validation node string and press [ENTER].</p>
             </div>
 
             <p id="shutter-footer" style="margin-top: 15px; font-size: 0.8rem; opacity: 0.5; position: relative; z-index: 6;">PLEASE HOLD STEADY DURING VENTILATION CYCLE.</p>
@@ -706,7 +704,6 @@
         <div class="tape-wrapper tape-bottom" style="position: absolute; bottom:0;"><div class="caution-tape"></div></div>
     </div>
 
-    <!-- --- JAVASCRIPT SYSTEM ENGINE LOGIC --- -->
     <script>
         // --- MASTER LOGICAL DATA MANAGEMENT ---
         const CURRENT_VERSION = "v1.0.0";
@@ -831,7 +828,6 @@
             if(isPromptTransitionActive) return; // Halt standard loops during terminal decryption states
             
             document.documentElement.style.setProperty('--shutter-text-color', `var(--alert-${currentActiveLevel})`);
-            blastShutter.classList.remove('shutter-worn');
             shutterDamageLayer.style.display = 'none';
             terminalPromptFrame.style.display = 'none';
             shutterFooter.style.display = 'block';
@@ -892,9 +888,10 @@
             // Step 2: Drop down damaged terminal interface mid-flicker loop
             setTimeout(() => {
                 bodyElement.classList.remove('glitch-active');
-                document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-purple)');
                 
-                blastShutter.classList.add('shutter-worn');
+                // Mirror the current condition mode color on entry instead of jumping to purple
+                document.documentElement.style.setProperty('--shutter-text-color', `var(--alert-${currentActiveLevel})`);
+                
                 shutterDamageLayer.style.display = 'block';
                 shutterFooter.style.display = 'none';
                 
@@ -919,6 +916,8 @@
                 // Success: Routing user into Purple Quarantine Zone
                 shutterTitle.textContent = "TRANSMISSION RECOGNIZED.";
                 shutterText.textContent = "Synchronizing chronal vectors... Activating high-tier quarantine node sub-systems. Welcome back, Operator.";
+                
+                // Color transition is handled properly upon unlocking state changes
                 document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-purple)');
                 
                 purpleModeUnlocked = true;
@@ -957,7 +956,6 @@
             blastShutter.classList.remove('shutter-visible');
             blastShutter.style.top = "-100vh";
             setTimeout(() => {
-                blastShutter.classList.remove('shutter-worn');
                 shutterDamageLayer.style.display = 'none';
                 isPromptTransitionActive = false;
             }, 500);
