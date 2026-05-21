@@ -908,11 +908,23 @@
             }, 600);
         }
 
+        // 1. Define an async helper function to hash the input text
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);                    
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
         function verifyTerminalPassword() {
             const injectedKey = terminalPassField.value;
+            const hashedInput = await sha256(injectedKey);
+            
+            const targetHash = "c108eba395ef21c144719b407189e35b338a48c0908ba85ba4b91b51b00abdc5";
+            
             terminalPromptFrame.style.display = 'none';
-
-            if(injectedKey === "password") {
+            
+            if(hashedInput === targetHash) {
                 // Success: Routing user into Purple Quarantine Zone
                 shutterTitle.textContent = "TRANSMISSION RECOGNIZED.";
                 shutterText.textContent = "Synchronizing chronal vectors... Activating high-tier quarantine node sub-systems. Welcome back, Operator.";
