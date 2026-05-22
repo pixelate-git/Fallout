@@ -910,10 +910,9 @@
         
         function verifyTerminalPassword() {
             const injectedKey = terminalPassField.value;
-
             terminalPromptFrame.style.display = 'none';
-            
-            if(hashedInput === 'saltine285') {
+
+            if(injectedKey === "saltine285") {
                 // Success: Routing user into Purple Quarantine Zone
                 shutterTitle.textContent = "TRANSMISSION RECOGNIZED.";
                 shutterText.textContent = "Synchronizing chronal vectors... Activating high-tier quarantine node sub-systems. Welcome back, Operator.";
