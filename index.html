@@ -796,7 +796,7 @@
                     <div class="game-thumb"></div>
                     <div class="game-title">${game.title}</div>
                     <div class="game-desc">${game.desc}</div>
-                    <button class="launch-btn" onclick="alert('BOOTING PROTOCOL SUB-ARRAY: ${game.title}...')">EXECUTE APPLICATION</button>
+                    <button class="launch-btn" onclick="launchGame('${game.id}')">EXECUTE APPLICATION</button>
                 `;
                 gamesContainer.appendChild(card);
             });
@@ -875,7 +875,43 @@
         }
 
         // --- GLITCH OVERLOAD TERMINAL OVERRIDE CRACKING ENGINE ---
-
+        
+        function launchGame(gameId) {
+        const gameUrl = `https://rawcdn.githack.com/pixelate-git/Fallout/main/games/${gameId}.html`;
+    
+        const newTab = window.open('about:blank', '_blank');
+    
+        if (newTab) {
+            newTab.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Launching Game...</title>
+                    <style>
+                        html, body {
+                            margin: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: #000;
+                        }
+    
+                        iframe {
+                            width: 100%;
+                            height: 100%;
+                            border: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${gameUrl}" allowfullscreen></iframe>
+                </body>
+                </html>
+            `);
+    
+            newTab.document.close();
+        }
+    }
+        
         function triggerGlitchBypassSequence() {
             if(isPromptTransitionActive) return;
             isPromptTransitionActive = true;
