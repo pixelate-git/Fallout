@@ -877,41 +877,63 @@
 
         // --- GLITCH OVERLOAD TERMINAL OVERRIDE CRACKING ENGINE ---
         
-        function launchGame(gameId) {
-        const gameUrl = `https://rawcdn.githack.com/pixelate-git/Fallout/main/games/${gameId}.html`;
+        async function launchGame(gameId) {
+            const gameUrl = `https://raw.githubusercontent.com/pixelate-git/Fallout/main/games/${gameId}.html`;
+
+            const newTab = window.open('about:blank', '_blank');
     
-        const newTab = window.open('about:blank', '_blank');
-    
-        if (newTab) {
+            if (!newTab) {
+                alert('Popup blocked. Please allow popups for this site.');
+                return;
+            }
+
             newTab.document.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Launching Game...</title>
+                    <title>Loading Game...</title>
                     <style>
                         html, body {
                             margin: 0;
                             width: 100%;
                             height: 100%;
                             background: #000;
+                            overflow: hidden;
                         }
-    
-                        iframe {
-                            width: 100%;
-                            height: 100%;
-                            border: none;
+        
+                        body {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-family: Arial, sans-serif;
                         }
                     </style>
                 </head>
                 <body>
-                    <iframe src="${gameUrl}" allowfullscreen></iframe>
+                    Loading game...
                 </body>
                 </html>
             `);
-    
+
             newTab.document.close();
-        }
+        
+            try {
+                const response = await fetch(gameUrl);
+                const html = await response.text();
+        
+                newTab.document.open();
+                newTab.document.write(html);
+                newTab.document.close();
+            } catch (err) {
+                newTab.document.body.innerHTML = `
+                    <div style="color:white;font-family:Arial;padding:20px;">
+                        Failed to load game.<br><br>
+                        ${err}
+                    </div>
+        `;
     }
+}
         
         function triggerGlitchBypassSequence() {
             if(isPromptTransitionActive) return;
