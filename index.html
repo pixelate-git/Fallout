@@ -878,7 +878,9 @@
         // --- GLITCH OVERLOAD TERMINAL OVERRIDE CRACKING ENGINE ---
         
         async function launchGame(gameId) {
-            const gameUrl = `https://raw.githubusercontent.com/pixelate-git/Fallout/refs/heads/main/1.html;
+            const gameUrl = `https://raw.githubusercontent.com/pixelate-git/Fallout/refs/heads/main/${gameId}.html`;
+
+            // Above code *should* run a HTML file in a new tab, with the URL set to about:blank.
 
             const newTab = window.open('about:blank', '_blank');
     
