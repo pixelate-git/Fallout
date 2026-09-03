@@ -790,6 +790,7 @@
                 return;
             }
 
+            /*
             filteredRegistry.forEach(game => {
                 const card = document.createElement('div');
                 card.className = 'game-card';
@@ -801,6 +802,22 @@
                 `;
                 gamesContainer.appendChild(card);
             });
+            */
+
+            filteredRegistry.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                // Set the background image using the gameId
+                const thumbStyle = `content: url('https://raw.githubusercontent.com/pixelate-git/Fallout/refs/heads/main/${game.id}.png');`;
+                card.innerHTML = `
+                    <div class="game-thumb" style="${thumbStyle}"></div>
+                    <div class="game-title">${game.title}</div>
+                    <div class="game-desc">${game.desc}</div>
+                    <button class="launch-btn" onclick="launchGame('${game.id}')">EXECUTE APPLICATION</button>
+                `;
+                gamesContainer.appendChild(card);
+            });
+            
         }
 
         function checkControlSubpanelVisibility() {
