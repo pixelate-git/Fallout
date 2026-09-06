@@ -622,7 +622,7 @@
 <body class="condition-green">
     
     <div id="system-alert-banner"> 
-        ⚠️ CRITICAL OVERRIDE: CLIENT VERSION OUTDATED. LOCAL: v1.0.1 // REQUIRED: <span id="required-version">X.X.X</span>. SYSTEM CORRUPTION RISK.
+        ⚠️ CLIENT VERSION OUTDATED. LOCAL: v1.0.1 // REQUIRED: <span id="required-version">X.X.X</span>. DOWNLOADING THE NEW VERSION IS HIGHLY RECOMMENDED
     </div>
 
     <div class="tape-wrapper tape-top">
@@ -632,17 +632,17 @@
     <header>
         <div class="header-top">
             <div>
-                <h1>BUNKER-NET://CORE_ARCADE</h1>
-                <p style="font-size: 0.8rem; color: #666; margin-top: 4px;">SECURE TERMINAL ACCESS SYSTEM</p>
+                <h1>FALLOUT</h1>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 4px;">Easy to access, hard to take down.</p>
             </div>
             
             <div class="console-system-group">
                 <div class="interface-control-group">
                     <div class="industrial-bolt bolt-rotatable" id="glitch-bolt-trigger"></div>
                     <div class="alert-panel">
-                        <button class="alert-btn active" data-level="green">LVL 1: SAFE</button>
-                        <button class="alert-btn" data-level="yellow">LVL 2: CAUTION</button>
-                        <button class="alert-btn" data-level="red">LVL 3: CRISIS</button>
+                        <button class="alert-btn active" data-level="green">ZONE: COMMON</button>
+                        <button class="alert-btn" data-level="yellow">ZONE: ODD</button>
+                        <button class="alert-btn" data-level="red">ZONE: UNIQUE</button>
                     </div>
                     <div class="industrial-bolt bypass-rivet" id="secret-trigger"></div>
                 </div>
@@ -650,8 +650,8 @@
                 <div class="interface-control-group override-box" id="override-subpanel" style="display: none;">
                     <div class="industrial-bolt"></div>
                     <div class="alert-panel" id="override-buttons-target">
-                        <button class="alert-btn" data-level="blue" id="archon-btn" style="display: none;">OVERRIDE: ARCHON</button>
-                        <button class="alert-btn" data-level="purple" id="quarantine-btn" style="display: none;">OVERRIDE: QUARANTINE</button>
+                        <button class="alert-btn" data-level="blue" id="archon-btn" style="display: none;">OVERRIDE: NULL</button>
+                        <button class="alert-btn" data-level="purple" id="quarantine-btn" style="display: none;">OVERRIDE: VOID</button>
                     </div>
                     <div class="industrial-bolt"></div>
                 </div>
@@ -667,7 +667,7 @@
         <section class="bunker-panel">
             <div class="panel-title">
                 <span id="category-heading">AVAILABLE APPLICATIONS</span>
-                <span id="system-counter" style="font-size: 0.9rem;">RECORDS DISPLAYED: 0</span>
+                <span id="system-counter" style="font-size: 0.9rem;">APPLICATIONS DISPLAYED: 0</span>
             </div>
             
             <div class="game-grid" id="games-container">
@@ -676,8 +676,8 @@
     </main>
 
     <footer>
-        <div style="font-size: 0.8rem; color: #555;">SECURITY REGISTRY ENGINE INTERFACE // LOC_0x9F</div>
-        <button class="system-wipe-btn" id="wipe-system-data">WIPE HARD SYSTEM DATA</button>
+        <div style="font-size: 0.8rem; color: #555;">DATA MANAGEMENT</div>
+        <button class="system-wipe-btn" id="wipe-system-data">WIPE LOCAL DATA</button>
     </footer>
 
     <div class="tape-wrapper tape-bottom" style="position: fixed; bottom: 0; left: 0; z-index: 998;">
@@ -694,12 +694,12 @@
             <p id="shutter-text" style="position: relative; z-index: 6; font-size: 0.95rem; line-height: 1.4;">RE-ROUTING POWER CHANNELS AND SECURING VAULT MODULES...</p>
             
             <div class="crypto-prompt-container" id="terminal-prompt-frame">
-                <label for="terminal-pass-field" style="display: block; margin-bottom: 12px; font-size: 0.85rem; letter-spacing: 2px; color: inherit;">CRITICAL QUANTUM DECRYPTION KEY REQUIRED:</label>
+                <label for="terminal-pass-field" style="display: block; margin-bottom: 12px; font-size: 0.85rem; letter-spacing: 2px; color: inherit;">A PASSWORD IS REQUIRED:</label>
                 <input type="password" id="terminal-pass-field" class="crypto-input" autocomplete="off" placeholder="••••••••">
-                <p style="opacity:0.5; font-size:0.75rem; margin-top:12px; text-transform: uppercase; letter-spacing: 1px;">Input matrix validation node string and press [ENTER].</p>
+                <p style="opacity:0.5; font-size:0.75rem; margin-top:12px; text-transform: uppercase; letter-spacing: 1px;">Please input the password and press [ENTER].</p>
             </div>
 
-            <p id="shutter-footer" style="margin-top: 15px; font-size: 0.8rem; opacity: 0.5; position: relative; z-index: 6;">PLEASE HOLD STEADY DURING VENTILATION CYCLE.</p>
+            <p id="shutter-footer" style="margin-top: 15px; font-size: 0.8rem; opacity: 0.5; position: relative; z-index: 6;">Please do not exit the tab during loading.</p>
         </div>
         <div class="tape-wrapper tape-bottom" style="position: absolute; bottom:0;"><div class="caution-tape"></div></div>
     </div>
@@ -707,7 +707,7 @@
     <script>
         // --- MASTER LOGICAL DATA MANAGEMENT ---
         const CURRENT_VERSION = "v1.0.1";
-        const SECRET_SEQUENCE = ['green', 'red', 'yellow', 'green', 'red', 'green'];
+        const SECRET_SEQUENCE = ['green', 'red', 'yellow', 'green', 'red', 'green', 'red', 'yellow'];
         
         const DATABASE_GAMES = [
             // Green section games
@@ -787,7 +787,7 @@
                     const cleaned = onlineVersion.trim();
                     if(cleaned !== CURRENT_VERSION) triggerVersionAlertBanner(cleaned);
                 })
-                .catch(() => console.warn("Version tracking verification bypassed. Offline routing default configuration active."));
+                .catch(() => console.error("ERROR: COULD NOT CONNECT TO GITHUB. FALLOUT IS LIKELY NONFUNCTIONAL."));
         }
 
         function triggerVersionAlertBanner(requiredVer) {
@@ -805,7 +805,7 @@
                        (game.title.toLowerCase().includes(searchQuery) || game.desc.toLowerCase().includes(searchQuery));
             });
 
-            systemCounter.textContent = `RECORDS DISPLAYED: ${filteredRegistry.length}`;
+            systemCounter.textContent = `APPLICATIONS DISPLAYED: ${filteredRegistry.length}`;
 
             if(filteredRegistry.length === 0) {
                 gamesContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--primary); padding: 40px; border: 2px dashed var(--border-metal);">NO FILE RECORD ALIGNS WITH CURRENT MATRIX QUERY.</div>`;
@@ -873,20 +873,20 @@
             shutterFooter.style.display = 'block';
 
             if(targetLevel === 'green') {
-                shutterTitle.textContent = "DE-ESCALATING THREAT MATRIX...";
-                shutterText.textContent = "Establishing safe parameters. Restoring auxiliary recreational databanks.";
+                shutterTitle.textContent = "Back to the basics.";
+                shutterText.textContent = "Loading... Please wait.";
             } else if(targetLevel === 'yellow') {
-                shutterTitle.textContent = "WARNING: LEVEL 2 AMBIENT CONDITIONS...";
-                shutterText.textContent = "Securing core containment fields. Isolating hazard class computations.";
+                shutterTitle.textContent = "Odds and ends.";
+                shutterText.textContent = "Loading... Please wait.";
             } else if(targetLevel === 'red') {
-                shutterTitle.textContent = "CRITICAL DEFCON OVERRIDE ENGINE ONLINE...";
-                shutterText.textContent = "Ventilation pathways locked. Purging basic databases. Accessing military level operations.";
+                shutterTitle.textContent = "Something unique for a change?";
+                shutterText.textContent = "Loading... Please wait.";
             } else if(targetLevel === 'blue') {
-                shutterTitle.textContent = "BOOTING ARCHON CLASSIFIED KERNEL...";
-                shutterText.textContent = "Bypassing external vault nodes... Reading classified dark-web sandbox allocations.";
+                shutterTitle.textContent = "...why are you here?";
+                shutterText.textContent = "Loading... Please wait.";
             } else if(targetLevel === 'purple') {
-                shutterTitle.textContent = "RE-ENGAGING QUARANTINE PROTOCOLS...";
-                shutterText.textContent = "Restricted sector grid configuration active. Critical memory allocation isolation.";
+                shutterTitle.textContent = "Have you been snooping around the HTML?";
+                shutterText.textContent = "Loading... Please wait.";
             }
 
             // Slide in and simultaneously fade in the screen shutter overlay
@@ -932,13 +932,13 @@
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Loading Game...</title>
+                    <title>Fallout Node</title>
                     <style>
                         html, body {
                             margin: 0;
                             width: 100%;
                             height: 100%;
-                            background: #000;
+                            background: black;
                             overflow: hidden;
                         }
         
@@ -948,6 +948,7 @@
                             justify-content: center;
                             color: white;
                             font-family: Arial, sans-serif;
+                            font-size: 48px;
                         }
                     </style>
                 </head>
@@ -995,8 +996,8 @@
                 shutterDamageLayer.style.display = 'block';
                 shutterFooter.style.display = 'none';
                 
-                shutterTitle.textContent = "FUTURE RELIC OVERRIDE ENGAGED // LINK_0x7A";
-                shutterText.textContent = "Quantum decryption array baseline active. Access terminal node data structures by transmitting the security unlock verification hash.";
+                shutterTitle.textContent = "PASSWORD TERMINAL";
+                shutterText.textContent = "You have found a part of a secret... Now let's see if you know the password!";
                 
                 terminalPassField.value = "";
                 terminalPromptFrame.style.display = 'block';
@@ -1014,8 +1015,8 @@
 
             if(injectedKey === "saltine285") {
                 // Success: Routing user into Purple Quarantine Zone
-                shutterTitle.textContent = "TRANSMISSION RECOGNIZED.";
-                shutterText.textContent = "Synchronizing chronal vectors... Activating high-tier quarantine node sub-systems. Welcome back, Operator.";
+                shutterTitle.textContent = "PASSWORD RECOGNIZED.";
+                shutterText.textContent = "You have been granted access to this zone.";
                 
                 // Color transition is handled properly upon unlocking state changes
                 document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-purple)');
@@ -1041,8 +1042,8 @@
                 }, 1200);
             } else {
                 // Failure: Revert back to the safety zone previously stored
-                shutterTitle.textContent = "DECRYPTION INTEGRITY FAILURE. REJECTED.";
-                shutterText.textContent = "Re-establishing normal communication pathways with baseline servers... Stand by.";
+                shutterTitle.textContent = "PASSWORD INCORRECT. YOU HAVE BEEN REJECTED.";
+                shutterText.textContent = "Resetting page... Stand by.";
                 document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-red)');
 
                 setTimeout(() => {
@@ -1064,7 +1065,7 @@
         // --- HARD DATA SAVE RESET PROCEDURE ---
         function executeHardSystemWipe() {
             if(isPromptTransitionActive) return;
-            if(!confirm("⚠️ WARNING: CLEARING APPLICATION MEMORY REGISTRY.\nThis action locks all custom overrides and clears terminal parameters. Continue?")) return;
+            if(!confirm("⚠️ WARNING: YOU ARE ATTEMPTING TO CLEAR LOCAL STORAGE.\nThis removes access to secret zones, but does not affect game data. Continue?")) return;
 
             isPromptTransitionActive = true;
             
@@ -1082,8 +1083,8 @@
 
             // Run system purge sequence shutter animation
             document.documentElement.style.setProperty('--shutter-text-color', 'var(--alert-red)');
-            shutterTitle.textContent = "PURGING MEMORY STRUCTURAL BANKS...";
-            shutterText.textContent = "Wiping cached authorization keys. Relocking hardware subpanels. Returning to base infrastructure state...";
+            shutterTitle.textContent = "WIPING LOCAL STORAGE...";
+            shutterText.textContent = "Returning to normal access state...";
             shutterFooter.style.display = 'block';
             
             blastShutter.classList.add('shutter-visible');
@@ -1097,7 +1098,7 @@
                 document.querySelector('[data-level="green"]').classList.add('active');
 
                 currentActiveLevel = "green";
-                categoryHeading.textContent = "SECURITY CLEARANCE: SECURE_GREEN_FILES";
+                categoryHeading.textContent = "CURRENTLY ACCESSING: GREEN ZONE";
                 buildSystemInterfaceMatrix();
             }, 600);
 
@@ -1160,7 +1161,7 @@
                 const activeBtn = document.querySelector(`[data-level="${savedLevel}"]`);
                 if(activeBtn) activeBtn.classList.add('active');
                 
-                categoryHeading.textContent = `SECURITY CLEARANCE: SECURE_${savedLevel.toUpperCase()}_FILES`;
+                categoryHeading.textContent = `CURRENTLY ACCESSING: ${savedLevel.toUpperCase()} ZONE`;
             }
 
             document.documentElement.style.setProperty('--shutter-text-color', `var(--alert-${currentActiveLevel})`);
