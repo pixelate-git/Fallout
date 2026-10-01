@@ -9,7 +9,9 @@ Games / Proxy site. WIP
 5. Congratulations! You now have an awesome games site right at your fingertips.
 
 # Request Games/Apps/Movies
-https://forms.gle/53NSfjoN5NgW39US9
+Create an issue on the 'issues' tab of this GitHub Repo.
+Less used Google form: https://forms.gle/53NSfjoN5NgW39US9
+
 
 # Contact
 Email: pixelate@tutamail OR unknownhostzero@gmail.com (preferred)
